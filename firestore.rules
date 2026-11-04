@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Firebase Authentication > Users 화면에서 확인한 승인 계정의 UID로 교체합니다.
+    function approvedTeacher() {
+      return request.auth != null &&
+             request.auth.uid == 'REPLACE_WITH_APPROVED_FIREBASE_UID';
+    }
+
+    function validRecord() {
+      return request.resource.data.keys().hasOnly([
+        'alias', 'topic', 'accuracy', 'confidence', 'minutes',
+        'usedAI', 'note', 'createdAt'
+      ]) &&
+      request.resource.data.keys().hasAll([
+        'alias', 'topic', 'accuracy', 'confidence', 'minutes',
+        'usedAI', 'note', 'createdAt'
+      ]) &&
+      request.resource.data.alias is string &&
+      request.resource.data.alias.size() >= 2 &&
+      request.resource.data.alias.size() <= 24 &&
+      request.resource.data.topic in [
+        '집합과 명제', '함수', '유리함수와 무리함수', '도형의 방정식'
+      ] &&
+      request.resource.data.accuracy is int &&
+      request.resource.data.accuracy >= 0 &&
+      request.resource.data.accuracy <= 100 &&
+      request.resource.data.confidence is int &&
+      request.resource.data.confidence >= 1 &&
+      request.resource.data.confidence <= 5 &&
+      request.resource.data.minutes is int &&
+      request.resource.data.minutes >= 10 &&
+      request.resource.data.minutes <= 120 &&
+      request.resource.data.usedAI is bool &&
+      request.resource.data.note is string &&
+      request.resource.data.note.size() <= 200 &&
+      request.resource.data.createdAt == request.time;
+    }
+
+    match /learningRecords/{recordId} {
+      allow get, list: if approvedTeacher();
+      allow create: if approvedTeacher() && validRecord();
+      allow delete: if approvedTeacher();
+      allow update: if false;
+    }
+
+    // 위에서 명시한 경로 외 모든 DB 경로는 기본 거부
+    match /{document=**} { allow read, write: if false; }
+  }
+}

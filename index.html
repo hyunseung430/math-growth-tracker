@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="공통수학2 학습 기록을 DB에 저장하고 성장을 시각화하는 대학원 웹앱 과제" />
+  <title>Math Growth Tracker | 수학 학습 성장 기록장</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">∑</span><span><strong>Math Growth</strong><small>LEARNING TRACKER</small></span></div>
+      <div class="topbar-actions"><span class="eyebrow" id="sessionLabel">수학 학습 데이터 탐구</span><button id="signOutButton" class="button subtle hidden" type="button">로그아웃</button></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-content"><div class="hero-chip">GRADUATE PROJECT · WEB APP + DATABASE</div>
+        <h1 id="heroTitle">기록하는 수학,<br /><em>보이는 성장.</em></h1>
+        <p>공통수학2 학습 활동을 기록하고, 정답률과 자신감의 변화를 데이터로 확인합니다.</p>
+        <div class="hero-tags"><span>데이터 입력</span><span>성장 시각화</span><span>Firebase 보안</span></div>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="float-card"><span>학습 성장 지표</span><strong>+ 24%</strong><div class="mini-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><small>※ 디자인 예시 수치</small></div>
+      </div>
+    </section>
+
+    <div id="modeBanner" class="notice" role="status"></div>
+    <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+    <section id="loginPanel" class="login-panel hidden" aria-labelledby="loginTitle">
+      <div><span class="section-kicker">SECURE LOGIN</span><h2 id="loginTitle">승인된 계정으로 로그인</h2><p>실제 Firebase 모드에서는 허용된 계정만 DB를 읽거나 변경할 수 있습니다.</p></div>
+      <form id="loginForm" class="login-form">
+        <label>이메일 <input id="emailInput" type="email" autocomplete="username" required placeholder="교사 계정 이메일" /></label>
+        <label>비밀번호 <input id="passwordInput" type="password" autocomplete="current-password" required placeholder="비밀번호" /></label>
+        <button class="button primary" type="submit">로그인하고 시작하기</button>
+      </form>
+    </section>
+
+    <div id="workspace" class="hidden">
+      <section class="summary-section" aria-label="학습 통계">
+        <div class="section-heading"><div><span class="section-kicker">OVERVIEW</span><h2>학습 현황</h2></div><span id="updatedLabel" class="muted small">저장된 기록 기준</span></div>
+        <div class="stat-grid">
+          <article class="stat-card"><div class="stat-icon">▤</div><span>총 학습 기록</span><strong id="totalRecords">0<small>건</small></strong><p>저장된 전체 활동</p></article>
+          <article class="stat-card"><div class="stat-icon">◎</div><span>평균 정답률</span><strong id="averageAccuracy">0<small>%</small></strong><p>등록된 기록 평균</p></article>
+          <article class="stat-card"><div class="stat-icon">✦</div><span>평균 자신감</span><strong id="averageConfidence">0<small>/5</small></strong><p>자기평가 점수</p></article>
+          <article class="stat-card"><div class="stat-icon">◷</div><span>누적 학습 시간</span><strong id="totalMinutes">0<small>분</small></strong><p>활동 시간 합계</p></article>
+        </div>
+      </section>
+
+      <div class="main-grid">
+        <section class="panel form-panel" aria-labelledby="formHeading"><div class="panel-heading"><span class="section-kicker">01 · INPUT</span><h2 id="formHeading">학습 활동 기록하기</h2><p>학습 후 간단히 입력하면 결과가 저장됩니다.</p></div>
+          <form id="recordForm" class="record-form">
+            <label>학생 식별 코드 <input name="alias" type="text" minlength="2" maxlength="24" placeholder="예: S001 (실명 입력 금지)" required /></label>
+            <label>학습 단원 <select name="topic" required>
+              <option value="집합과 명제">집합과 명제</option><option value="함수">함수</option><option value="유리함수와 무리함수">유리함수와 무리함수</option><option value="도형의 방정식">도형의 방정식</option>
+            </select></label>
+            <div class="slider-group"><label for="accuracyInput">학습 정답률 <output id="accuracyValue" for="accuracyInput">70%</output></label><input id="accuracyInput" name="accuracy" type="range" min="0" max="100" step="5" value="70" /><div class="range-labels"><span>0%</span><span>100%</span></div></div>
+            <div class="slider-group"><label for="confidenceInput">수학 자신감 <output id="confidenceValue" for="confidenceInput">3 / 5</output></label><input id="confidenceInput" name="confidence" type="range" min="1" max="5" step="1" value="3" /><div class="range-labels"><span>낮음</span><span>높음</span></div></div>
+            <div class="slider-group"><label for="minutesInput">학습 시간 <output id="minutesValue" for="minutesInput">30분</output></label><input id="minutesInput" name="minutes" type="range" min="10" max="120" step="10" value="30" /><div class="range-labels"><span>10분</span><span>120분</span></div></div>
+            <label class="check-row"><input name="usedAI" type="checkbox" /><span>AI 코스웨어를 활용하여 학습함</span></label>
+            <label>학습 소감 / 어려웠던 부분 <textarea name="note" rows="3" maxlength="200" placeholder="간단한 학습 성찰을 남겨보세요."></textarea></label>
+            <button id="saveButton" class="button primary wide" type="submit">+ 학습 기록 저장</button>
+          </form>
+        </section>
+        <div class="right-stack">
+          <section class="panel chart-panel" aria-labelledby="chartTitle"><div class="panel-heading"><span class="section-kicker">02 · INSIGHT</span><h2 id="chartTitle">정답률 변화</h2><p>기록 순서에 따른 변화 (최대 최근 12개 기록)</p></div><div class="chart-container"><canvas id="accuracyChart" width="720" height="340" role="img" aria-label="최근 12개 기록의 정답률 꺾은선그래프"></canvas></div><div class="chart-legend"><i></i> 기록별 정답률 (%)</div></section>
+          <section class="panel insights-panel" aria-labelledby="insightsTitle"><div class="panel-heading"><span class="section-kicker">03 · REFLECTION</span><h2 id="insightsTitle">학습 분석</h2><p>입력된 데이터를 바탕으로 자동 계산합니다.</p></div><div class="insight-list"><div><span>AI 코스웨어 활용 기록</span><strong id="aiCount">0건</strong></div><div><span>최근 학습 정답률</span><strong id="latestAccuracy">-</strong></div><div><span>최다 학습 단원</span><strong id="topTopic">-</strong></div></div><p class="fine-print">정답률과 자신감은 입력된 자기기록 값으로, 인과관계를 입증하지 않습니다.</p></section>
+        </div>
+      </div>
+
+      <section class="panel history-panel" aria-labelledby="historyTitle"><div class="history-header"><div><span class="section-kicker">04 · DATABASE</span><h2 id="historyTitle">학습 기록 목록</h2><p>저장된 기록을 조회하고 필요한 자료를 CSV로 내려받습니다.</p></div><div class="history-tools"><input id="searchInput" type="search" placeholder="식별 코드 검색" aria-label="식별 코드 검색" /><select id="topicFilter" aria-label="단원별 필터"><option value="all">전체 단원</option><option value="집합과 명제">집합과 명제</option><option value="함수">함수</option><option value="유리함수와 무리함수">유리함수와 무리함수</option><option value="도형의 방정식">도형의 방정식</option></select><button id="exportButton" type="button" class="button outline">CSV 내보내기</button></div></div>
+        <div class="table-scroll"><table><thead><tr><th>식별 코드</th><th>단원</th><th>정답률</th><th>자신감</th><th>AI 활용</th><th>시간</th><th>학습 시각</th><th>작업</th></tr></thead><tbody id="recordsBody"></tbody></table><div id="emptyState" class="empty-state">아직 기록이 없습니다. 왼쪽 입력창에서 첫 기록을 저장해 보세요.</div></div>
+      </section>
+    </div>
+    <footer>Math Growth Tracker <span>·</span> 교육대학원 DB 연동 웹앱 프로젝트 <span>·</span> 개인정보 대신 익명 식별 코드를 사용하세요.</footer>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
