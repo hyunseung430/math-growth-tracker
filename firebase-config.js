@@ -2,10 +2,10 @@
 // Firebase 웹 API 키는 프로젝트 식별자이며 DB 접근 권한의 대체 수단이 아닙니다.
 // Firestore Security Rules로 특정 UID만 허용해야 합니다.
 export const firebaseConfig = {
-  apiKey: "REPLACE_WITH_FIREBASE_API_KEY",
-  authDomain: "REPLACE_WITH_PROJECT_ID.firebaseapp.com",
-  projectId: "REPLACE_WITH_PROJECT_ID",
-  appId: "REPLACE_WITH_FIREBASE_APP_ID"
+  apiKey: "AIzaSyADgoYEUxQe5t3_Dyv9Qxvepgx3DjyaO18",
+  authDomain: "math-growth-tracker.firebaseapp.com",
+  projectId: "math-growth-tracker",
+  appId: "1:1004461655944:web:89393317a856fb5e175c3d"
 };
 
 // 설정 전에는 브라우저 localStorage를 쓰는 기능 시연 모드로 작동합니다.
